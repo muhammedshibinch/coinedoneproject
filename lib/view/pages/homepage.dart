@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -55,57 +54,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: Column(
           children: [
-            TableCalendar(
-              firstDay: kFirstDay,
-              lastDay: kLastDay,
-              focusedDay: _focusedDay,
-              headerVisible: true,
-              headerStyle: HeaderStyle(
-                  titleTextFormatter: (date, locale) =>
-                      DateFormat("MMMM yyyy").format(date).toUpperCase(),
-                  headerPadding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-                  titleTextStyle: utils.textStyle(fontSize: 22),
-                  leftChevronVisible: false,
-                  rightChevronVisible: false,
-                  formatButtonVisible: false),
-              daysOfWeekStyle: DaysOfWeekStyle(
-                weekdayStyle:
-                    utils.textStyle(fontSize: 12, fontWeight: FontWeight.w400),
-                weekendStyle:
-                    utils.textStyle(fontSize: 12, fontWeight: FontWeight.w400),
-              ),
-              calendarStyle: CalendarStyle(
-                weekendTextStyle: utils.textStyle(),
-                todayDecoration: BoxDecoration(
-                    color: _selectedDay == null
-                        ? const Color(0xFF2F80ED)
-                        : Colors.white,
-                    shape: BoxShape.circle),
-                todayTextStyle: utils.textStyle(
-                    color: _selectedDay == null
-                        ? Colors.white
-                        : const Color(0XFF000000)),
-                selectedDecoration: const BoxDecoration(
-                    color: Color(0xFF2F80ED), shape: BoxShape.circle),
-                selectedTextStyle: utils.textStyle(color: Colors.white),
-                defaultTextStyle: utils.textStyle(),
-              ),
-              calendarFormat: _calendarFormat,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                if (!isSameDay(_selectedDay, selectedDay)) {
-                  Provider.of<ScheduleProvider>(context, listen: false)
-                      .getSchedules(selectedDay);
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                }
-              },
-            ),
+            calenderSection(kFirstDay, kLastDay, utils, context),
             const SizedBox(height: 5),
             scheduleSection(),
           ],
@@ -123,7 +72,60 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<dynamic> bottomSheet(BuildContext context) {
+  TableCalendar calenderSection(DateTime kFirstDay, DateTime kLastDay,
+          Utils utils, BuildContext context) =>
+      TableCalendar(
+        firstDay: kFirstDay,
+        lastDay: kLastDay,
+        focusedDay: _focusedDay,
+        headerVisible: true,
+        headerStyle: HeaderStyle(
+            titleTextFormatter: (date, locale) =>
+                DateFormat("MMMM yyyy").format(date).toUpperCase(),
+            headerPadding:
+                const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+            titleTextStyle: utils.textStyle(fontSize: 22),
+            leftChevronVisible: false,
+            rightChevronVisible: false,
+            formatButtonVisible: false),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          weekdayStyle:
+              utils.textStyle(fontSize: 12, fontWeight: FontWeight.w400),
+          weekendStyle:
+              utils.textStyle(fontSize: 12, fontWeight: FontWeight.w400),
+        ),
+        calendarStyle: CalendarStyle(
+          weekendTextStyle: utils.textStyle(),
+          todayDecoration: BoxDecoration(
+              color:
+                  _selectedDay == null ? const Color(0xFF2F80ED) : Colors.white,
+              shape: BoxShape.circle),
+          todayTextStyle: utils.textStyle(
+              color: _selectedDay == null
+                  ? Colors.white
+                  : const Color(0XFF000000)),
+          selectedDecoration: const BoxDecoration(
+              color: Color(0xFF2F80ED), shape: BoxShape.circle),
+          selectedTextStyle: utils.textStyle(color: Colors.white),
+          defaultTextStyle: utils.textStyle(),
+        ),
+        calendarFormat: _calendarFormat,
+        selectedDayPredicate: (day) {
+          return isSameDay(_selectedDay, day);
+        },
+        onDaySelected: (selectedDay, focusedDay) {
+          if (!isSameDay(_selectedDay, selectedDay)) {
+            Provider.of<ScheduleProvider>(context, listen: false)
+                .getSchedules(selectedDay);
+            setState(() {
+              _selectedDay = selectedDay;
+              _focusedDay = focusedDay;
+            });
+          }
+        },
+      );
+
+  Future bottomSheet(BuildContext context) {
     return showModalBottomSheet(
         context: context,
         shape: const RoundedRectangleBorder(
@@ -151,7 +153,11 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   String startTime = data.schedules[index].startTime.toString();
                   String endTime = data.schedules[index].endTime.toString();
-                  print(startTime);
+                  var dash = Container(
+                      height: 1,
+                      width: 5,
+                      color: Colors.black,
+                      margin: const EdgeInsets.symmetric(horizontal: 5));
                   return Container(
                     margin: index == 0 ? const EdgeInsets.only(top: 27) : null,
                     child: Row(
@@ -190,13 +196,7 @@ class _HomePageState extends State<HomePage> {
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline1),
-                                  Container(
-                                    height: 1,
-                                    width: 5,
-                                    color: Colors.black,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 5),
-                                  ),
+                                  dash,
                                   Text(data.timeFinder(endTime),
                                       style: Theme.of(context)
                                           .textTheme
