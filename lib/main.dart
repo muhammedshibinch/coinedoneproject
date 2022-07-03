@@ -1,7 +1,5 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'providers/scheduleprovider.dart';
 import 'utils/colorconstants.dart';
 import 'utils/utils.dart';
@@ -25,18 +23,19 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           canvasColor: canvasColor,
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: primaryColor,
-          ),
+              backgroundColor: primaryColor),
           textTheme: TextTheme(
             headline1: Utils().textStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
                 color: scheduleTextColor),
-            headline2:
-                Utils().textStyle(fontSize: 13, color: addScheduleSubtitle),
+            headline2: Utils().textStyle(
+              fontSize: 13,
+              color: addScheduleSubtitle,
+            ),
           ),
         ),
-        home: HomePage(),
+        home: const HomePage(),
       ),
     );
   }

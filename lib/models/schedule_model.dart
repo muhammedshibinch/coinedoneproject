@@ -1,13 +1,12 @@
-import 'package:meta/meta.dart';
-import 'dart:convert';
+
 
 class Schedule {
   Schedule({
-    @required this.id,
-    @required this.name,
-    @required this.startTime,
-    @required this.endTime,
-    @required this.date,
+    required this.id,
+    required this.name,
+    required this.startTime,
+    required this.endTime,
+    required this.date,
   });
 
   String? id;

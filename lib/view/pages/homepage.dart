@@ -165,16 +165,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Column(
                           children: [
-                            Container(
-                              height: 77,
-                              width: 55,
-                              decoration: BoxDecoration(
-                                  color: scheduleContainerColor,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Center(
-                                  child:
-                                      Image.asset("assets/images/Vector.png")),
-                            ),
+                            scheduleIcon(),
                             index == data.schedules.length - 1
                                 ? const SizedBox(
                                     height: 43,
@@ -190,29 +181,8 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Text(data.timeFinder(startTime),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1),
-                                  dash,
-                                  Text(data.timeFinder(endTime),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1),
-                                  Text(
-                                      "(${data.timeDifference(startTime, endTime)})",
-                                      style:
-                                          Theme.of(context).textTheme.headline1)
-                                ],
-                              ),
-                              Text(
-                                data.schedules[index].name!,
-                                style: Utils().textStyle(
-                                    color: scheduleTextColor,
-                                    fontWeight: FontWeight.w400),
-                              )
+                              scheduleTimeSection(data, startTime, context, dash, endTime),
+                              scheduleName(data, index)
                             ],
                           ),
                         ),
@@ -221,6 +191,40 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
       ),
+    );
+  }
+
+  Text scheduleName(ScheduleProvider data, int index) {
+    return Text(
+      data.schedules[index].name!,
+      style: Utils()
+          .textStyle(color: scheduleTextColor, fontWeight: FontWeight.w400),
+    );
+  }
+
+  Row scheduleTimeSection(ScheduleProvider data, String startTime,
+      BuildContext context, Container dash, String endTime) {
+    return Row(
+      children: [
+        Text(data.timeFinder(startTime),
+            style: Theme.of(context).textTheme.headline1),
+        dash,
+        Text(data.timeFinder(endTime),
+            style: Theme.of(context).textTheme.headline1),
+        Text("(${data.timeDifference(startTime, endTime)})",
+            style: Theme.of(context).textTheme.headline1)
+      ],
+    );
+  }
+
+  Container scheduleIcon() {
+    return Container(
+      height: 77,
+      width: 55,
+      decoration: BoxDecoration(
+          color: scheduleContainerColor,
+          borderRadius: BorderRadius.circular(30)),
+      child: Center(child: Image.asset("assets/images/Vector.png")),
     );
   }
 }

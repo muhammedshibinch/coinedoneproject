@@ -1,8 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../models/schedule_model.dart';
 import '../../providers/scheduleprovider.dart';
 import '../../utils/colorconstants.dart';
@@ -21,9 +18,6 @@ class _ScheduleButtomSheetState extends State<ScheduleButtomSheet> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   TimeOfDay startTime = TimeOfDay.now();
-  // final TextEditingController startTimeController = TextEditingController();
-  // final TextEditingController endTimeController = TextEditingController();
-  // final TextEditingController dateController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final timeprovider = Provider.of<ScheduleProvider>(context);
@@ -51,42 +45,13 @@ class _ScheduleButtomSheetState extends State<ScheduleButtomSheet> {
             crossAxisAlignment:
                 CrossAxisAlignment.start, // To make the card compact
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Add Schedule",
-                      style: utils.textStyle(
-                          fontSize: 16, color: addScheduleTitle)),
-                  IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close))
-                ],
-              ),
+              headerSection(utils, context),
               const SizedBox(height: 15),
               Text("Name", style: Theme.of(context).textTheme.headline2),
               const SizedBox(height: 4),
-              TextFormField(
-                controller: nameController,
-                validator: (String? val) {
-                  if (val!.isEmpty) {
-                    return 'Enter a schedule';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(3),
-                    filled: true,
-                    fillColor: const Color(0XFFE5EFFF),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(3),
-                      borderSide: BorderSide.none,
-                    )),
-              ),
+              nameField(),
               const SizedBox(height: 20),
-              Text(
-                "Date & time",
-                style: Theme.of(context).textTheme.headline2,
-              ),
+              Text("Date & time", style: Theme.of(context).textTheme.headline2),
               const SizedBox(height: 4),
               Container(
                 padding: const EdgeInsets.only(top: 2, bottom: 2, left: 15),
@@ -120,26 +85,64 @@ class _ScheduleButtomSheetState extends State<ScheduleButtomSheet> {
                 ),
               ),
               const SizedBox(height: 21),
-              CustomButton(
-                  title: "Add Schedule",
-                  onTap: () {
-                    final newSchedule = Schedule(
-                        id: null,
-                        name: nameController.text.trim(),
-                        startTime: timeprovider.time24(timeprovider.startTime),
-                        endTime: timeprovider.time24(timeprovider.endTime),
-                        date: timeprovider.selectedDate);
-                    if (_formKey.currentState!.validate()) {
-                      save(context, newSchedule);
-                      Navigator.pop(context);
-                      timeprovider.getSchedules(widget.date!);
-                    }
-                  }),
+              addButton(timeprovider, context),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Row headerSection(Utils utils, BuildContext context) {
+    return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Add Schedule",
+                    style: utils.textStyle(
+                        fontSize: 16, color: addScheduleTitle)),
+                IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close))
+              ],
+            );
+  }
+
+  TextFormField nameField() {
+    return TextFormField(
+      controller: nameController,
+      validator: (String? val) {
+        if (val!.isEmpty) {
+          return 'Enter a schedule';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(3),
+          filled: true,
+          fillColor: const Color(0XFFE5EFFF),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(3),
+            borderSide: BorderSide.none,
+          )),
+    );
+  }
+
+  CustomButton addButton(ScheduleProvider timeprovider, BuildContext context) {
+    return CustomButton(
+        title: "Add Schedule",
+        onTap: () {
+          final newSchedule = Schedule(
+              id: null,
+              name: nameController.text.trim(),
+              startTime: timeprovider.time24(timeprovider.startTime),
+              endTime: timeprovider.time24(timeprovider.endTime),
+              date: timeprovider.selectedDate);
+          if (_formKey.currentState!.validate()) {
+            save(context, newSchedule);
+            Navigator.pop(context);
+            timeprovider.getSchedules(widget.date!);
+          }
+        });
   }
 
   Divider divider() => Divider(
@@ -179,37 +182,4 @@ class _ScheduleButtomSheetState extends State<ScheduleButtomSheet> {
     Provider.of<ScheduleProvider>(context, listen: false)
         .postSchedule(context, newSchedule);
   }
-
-  // void timeSelector(BuildContext context, TimeOfDay fromTimeController) async {
-  //   TimeOfDay selectedTime;
-  //   final TimeOfDay? picked = await showTimePicker(
-  //     context: context,
-  //     initialTime: TimeOfDay.now(),
-  //   );
-  //   if (picked != null) {
-  //     selectedTime = picked;
-  //     // ignore: use_build_context_synchronously
-  //     setState(() {
-  //       fromTimeController = selectedTime;
-  //     });
-  //   }
-  //   setState(() {});
-  // }
-
-  // void dateSelector(
-  //     BuildContext context, TextEditingController fromDateController) async {
-  //   final DateTime? pick = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime.now(),
-  //     lastDate: DateTime(2100),
-  //   );
-  //   if (pick != null) {
-  //     String formattedDate = DateFormat('yyyy-MM-dd').format(pick);
-
-  //     fromDateController.text = formattedDate;
-  //   } else {
-  //     print("object");
-  //   }
-  // }
 }
